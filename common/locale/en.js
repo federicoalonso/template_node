@@ -1,0 +1,77 @@
+const crudMessages = {
+  errorPerformingDatabaseOperation: 'Error performing database operation',
+  notFound: 'Not found',
+  userNotFound: 'User not found',
+  alreadyExists: 'Already exists',
+  objectIsMissing: 'Must send an object',
+  namePropertyIsMissing: 'Must send the name',
+  nameIsTooShort: 'The name must be at least 3 characters long',
+  nameIsTooLong: 'The name must be less than 45 characters',
+  playersPropertyIsMissing: 'Must send the number of players',
+  playersPropertyNotInRange: 'The number of players must be between 1 and 100',
+  stockNameIsTooShort: 'The name must be at least 3 characters long',
+  stockNameIsTooLong: 'The name must be less than 50 characters',
+  codePropertyIsMissing: 'Must send the code',
+  stockCodeIsTooShort: 'The code must be at least 3 characters long',
+  stockCodeIsTooLong: 'The code must be less than 6 characters',
+  descriptionPropertyIsMissing: 'Must send the description',
+  stockDescriptionIsTooShort:
+    'The description must be at least 3 characters long',
+  stockDescriptionIsTooLong: 'The description must be less than 255 characters',
+  stockNotFound: 'Stock not found',
+  gameNotFound: 'Game not found',
+  GameIdPropertyIsMissing: 'Must send the game id',
+  StockIdPropertyIsMissing: 'Must send the stock id',
+  initialMoneyPropertyIsMissing: 'Must send the initial amount of money',
+  initialMoneyPropertyNotInRange:
+    'The initial amount of money must be greater than 1',
+  userNotRegisteredInGame: 'The user is not registered in the game',
+  titlePropertyIsMissing: 'Must send the title',
+  newsTitleIsTooShort: 'The title must be at least 3 characters long',
+  newsTitleIsTooLong: 'The title must be less than 100 characters',
+  contentPropertyIsMissing: 'Must send the content',
+  newscontentIsTooShort: 'The content must be at least 3 characters long',
+  newscontentIsTooLong: 'The content must be less than 1000 characters',
+  datePropertyIsMissing: 'Must send the date',
+  datePropertyNotInRange:
+    'The date must be between 2020-01-01 and the current date',
+  stocks_idPropertyIsMissing: 'Must send the stock id',
+  datePropertyIsInvalid: 'The date is invalid',
+  pricePropertyIsMissing: 'Must send the price',
+  pricePropertyNotANumber: 'The price must be a number',
+  pricePropertyNotInRange: 'The price must be between 1 and 1000000',
+  missingToken: 'Must send the token',
+  notEnoughMoney: 'You do not have enough money to perform the transaction',
+  invalidAmount: 'The amount must be greater than 1',
+  notEnoughStocks: 'You do not have enough stocks to perform the transaction',
+  userIdPropertyIsMissing: 'User id not found.',
+  stockIdIsNotANumber: 'The stock id must be a number',
+  userIdIsNotANumber: 'The user id must be a number',
+  stockIdIsNotInRange: 'The stock id must be greater than 0',
+  userIdIsNotInRange: 'The user id must be greater than 0',
+  typePropertyIsMissing:
+    'Must send the type of recommendation algorithm to use',
+  userNotRegisteredToGame:
+    'The user is not registered to the game to which the stock belongs',
+  recommendationTypeNotFound: 'No suitable recommendation algorithm was found',
+
+  forbidden: "You don't have permission to access this resource",
+  defaultError: "Internal Server Error",
+  tokenExpired: "The token has expired",
+  routeNotFound: "Route not found",
+
+  emailPropertyIsMissing: "Object is missing the email property",
+  HasInvalidFormat: "Email has an invalid format",
+  passwordPropertyIsMissing: "Object is missing the password property",
+  codeNotFound: "Code does not exist",
+  codeAlreadyUsed: "Code has already been used",
+  passwordIncorrect: "Incorrect username or password",
+  userAlreadyRegisteredToGame: "User is already registered to the game",
+  passwordCannotContainSpaces: "Password cannot contain spaces",
+  passwordMustBeAtLeast12CharactersLong: "Password must be at least 12 characters long",
+  passwordMustContainAtLeast3DifferentCharacters: "Password must contain at least 3 different characters"
+}
+
+module.exports = {
+  crudMessages
+}
