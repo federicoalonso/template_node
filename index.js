@@ -14,13 +14,15 @@ const {
 
 const app = express();
 app.use(loggerMiddleware);
+app.use(express.json())
 
 // Routes
 const healthRouter = require('./routes/health');
 app.use(healthRouter);
+const todoRouter = require('./routes/todo');
+app.use(todoRouter);
 // End Routes
 
-app.use(express.json())
 const corsOptions = CORS_CONFIGURATION[ENVIRONMENT].corsOptions
 app.use(cors(corsOptions))
 

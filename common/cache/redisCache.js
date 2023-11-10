@@ -6,7 +6,7 @@ const redis = new Redis({
     port: REDIS_PORT,
 });
 
-const set = async (key, value, ttl) => {
+const set = async (key, value, ttl = 3 * 24 * 60 * 60) => {
     return await redis.set(key, JSON.stringify(value), 'EX', ttl);
 };
 

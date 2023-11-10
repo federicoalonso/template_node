@@ -1,7 +1,7 @@
 const NodeCache = require('node-cache');
 const cache = new NodeCache();
 
-const set = async (key, value, ttl) => {
+const set = async (key, value, ttl = 3 * 24 * 60 * 60) => {
     return await cache.set(key, value, ttl);
 };
 
