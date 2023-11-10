@@ -20,4 +20,4 @@ function loggerMiddleware(req, res, next) {
   next();
 }
 
-module.exports = { loggerMiddleware, logger };
+module.exports = loggerMiddleware;
