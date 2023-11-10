@@ -6,8 +6,8 @@ const redis = new Redis({
     port: REDIS_PORT,
 });
 
-const set = (key, value, ttl) => {
-    return redis.set(key, JSON.stringify(value), 'EX', ttl);
+const set = async (key, value, ttl) => {
+    return await redis.set(key, JSON.stringify(value), 'EX', ttl);
 };
 
 const get = async (key) => {
@@ -15,12 +15,17 @@ const get = async (key) => {
     return data ? JSON.parse(data) : null;
 };
 
-const del = (key) => {
-    return redis.del(key);
+const del = async (key) => {
+    return await redis.del(key);
 };
+
+const health = async () => {
+    return await redis.ping();
+}
 
 module.exports = {
     set,
     get,
     del,
+    health,
 };

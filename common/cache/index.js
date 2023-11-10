@@ -1,6 +1,6 @@
 const { CACHE_DEFAULT_TYPE } = require('../../config');
 const { logger } = require('../logger');
-const { messageBinder } = require('../locale/locale-binder');
+const { messageBinder } = require('../../utils/locale/locale-binder');
 const { ElementInvalidException } = require('../exceptions/exceptions');
 
 let cacheService;

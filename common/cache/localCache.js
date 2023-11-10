@@ -1,20 +1,25 @@
 const NodeCache = require('node-cache');
 const cache = new NodeCache();
 
-const set = (key, value, ttl) => {
-    return cache.set(key, value, ttl);
+const set = async (key, value, ttl) => {
+    return await cache.set(key, value, ttl);
 };
 
-const get = (key) => {
-    return cache.get(key);
+const get = async (key) => {
+    return await cache.get(key);
 };
 
-const del = (key) => {
-    return cache.del(key);
+const del = async (key) => {
+    return await cache.del(key);
+};
+
+const health = async () => {
+    return await cache.getStats();
 };
 
 module.exports = {
     set,
     get,
     del,
+    health,
 };
