@@ -1,0 +1,23 @@
+{
+    "service_description": "Description of the API",
+    "cors": {
+      "test": {
+        "corsOptions": {
+          "origin": "*",
+          "methods": ["GET", "PUT", "POST", "DELETE"]
+        }
+      },
+      "development": {
+        "corsOptions": {
+          "origin": "*",
+          "methods": ["POST", "GET", "PUT", "DELETE"]
+        }
+      },
+      "production": {
+        "corsOptions": {
+          "origin": "*",
+          "methods": ["GET", "PUT", "POST", "DELETE"]
+        }
+      }
+    }
+  }

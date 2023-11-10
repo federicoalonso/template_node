@@ -1,4 +1,9 @@
+const conf = require('./config.json')
+
 module.exports = {
+    CORS_CONFIGURATION: conf.cors,
+    SERVICE_DESCRIPTION: conf.serviceDescription,
+    SERVICE_NAME: process.env.SERVICE_NAME || 'template-service',
     PORT: process.env.PORT || 80,
     LOG_LEVEL: process.env.LOG_LEVEL || 'info',
     ENVIRONMENT: process.env.ENVIRONMENT || 'development',

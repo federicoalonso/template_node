@@ -1,9 +1,10 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors')
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const {
-    PORT
+    PORT, CORS_CONFIGURATION, SERVICE_NAME, SERVICE_DESCRIPTION, ENVIRONMENT
 } = require('./config');
 const loggerMiddleware = require('./middleware/loggerMiddleware');
 const undefinedRouteMiddleware = require('./middleware/undefinedRouteMiddleware');
@@ -20,15 +21,17 @@ app.use(healthRouter);
 // End Routes
 
 app.use(express.json())
+const corsOptions = CORS_CONFIGURATION[ENVIRONMENT].corsOptions
+app.use(cors(corsOptions))
 
 // Swagger
 const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Template NodeJS API',
+            title: SERVICE_NAME,
             version: '1.0.0',
-            description: 'Description of the API',
+            description: SERVICE_DESCRIPTION,
         },
     },
     apis: ['./routes/*.js'],
