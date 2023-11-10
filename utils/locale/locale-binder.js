@@ -9,7 +9,7 @@ const messageBinder = () => {
   } else {
     messageConfig = require("./es");
   }
-  return messageConfig.crudMessages;
+  return messageConfig.messageBinder;
 };
 
 module.exports = {
