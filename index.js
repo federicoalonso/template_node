@@ -6,11 +6,12 @@ const { logger } = require('./common/logger');
 
 const app = express();
 
-app.use(loggerMiddleware);
+// Routes
+const healthRouter = require('./routes/health');
+app.use(healthRouter);
+// End Routes
 
-app.get('/health', (req, res) => {
-    res.send('Hello World!');
-});
+app.use(loggerMiddleware);
 
 app.listen(PORT, () => {
     logger.info(`App listening at http://localhost:${PORT}`);
