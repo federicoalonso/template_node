@@ -14,4 +14,15 @@ if (CACHE_DEFAULT_TYPE === 'memory') {
     throw new ElementInvalidException(messageBinder().invalidCacheType);
 }
 
-module.exports = cacheService;
+const customCacheService = (type) => {
+    if (type === 'memory') {
+        return require('./localCache');
+    } else if (type === 'redis') {
+        return require('./redisCache');
+    } else {
+        logger.error(messageBinder().invalidCacheType);
+        throw new ElementInvalidException(messageBinder().invalidCacheType);
+    }
+}
+
+module.exports = {  cacheService, customCacheService };
