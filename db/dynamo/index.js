@@ -9,6 +9,7 @@ const {
 const {
     logger
 } = require('../../common/logger');
+const { ElementNotFoundException } = require('../../common/exceptions/exceptions');
 const {
     ListTablesCommand,
     DynamoDBClient
@@ -20,10 +21,8 @@ const {
     PutCommand,
     GetCommand,
     UpdateCommand,
+    DeleteCommand,
 } = require("@aws-sdk/lib-dynamodb");
-const {
-    v4: uuidv4
-} = require('uuid');
 
 const IDBService = require('../IDBService');
 
@@ -156,6 +155,9 @@ class DynamoDBService extends IDBService {
                 ConsistentRead: true,
             });
             const getResponse = await this.docClient.send(getCommand);
+            if (!getResponse.Item) {
+                throw new ElementNotFoundException(`Todo with id ${id} not found`);
+            }
             return getResponse.Item;
         } catch (error) {
             logger.error(error);
@@ -168,6 +170,8 @@ class DynamoDBService extends IDBService {
     async update(id, item) {
         logger.info('[DynamoDB] [update] Updating todo');
         try {
+            await this.getById(id);
+
             const updateCommand = new UpdateCommand({
                 TableName: this.tableName,
                 Key: {
@@ -188,6 +192,25 @@ class DynamoDBService extends IDBService {
             throw error;
         } finally {
             logger.info('[DynamoDB] [update] Updating todo finished');
+        }
+    }
+
+    async delete(id) {
+        logger.info('[DynamoDB] [delete] Deleting todo');
+        try {
+            const deleteCommand = new DeleteCommand({
+                TableName: this.tableName,
+                Key: {
+                    id: id,
+                },
+            });
+            const deleteResponse = await this.docClient.send(deleteCommand);
+            return deleteResponse.Attributes;
+        } catch (error) {
+            logger.error(error);
+            throw error;
+        } finally {
+            logger.info('[DynamoDB] [delete] Deleting todo finished');
         }
     }
 }

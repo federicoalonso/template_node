@@ -158,6 +158,23 @@ const startTodoRouter = async (app, dbSer) => {
             logger.info('[TodoRouter] [update] Updating todo method finished');
         }
     });
+
+    app.delete('/todo/:id', async (req, res) => {
+        logger.info('[TodoRouter] [delete] Deleting todo method invoked');
+        try {
+            const {
+                id
+            } = req.params;
+            await dbService.delete(id);
+            await cacheService.del('todos');
+            res.status(204).send();
+        } catch (error) {
+            logger.error(error);
+            return evalException(error, res);
+        } finally {
+            logger.info('[TodoRouter] [delete] Deleting todo method finished');
+        }
+    });
 }
 
 module.exports = startTodoRouter;
