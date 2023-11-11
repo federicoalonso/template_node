@@ -27,4 +27,6 @@ module.exports = {
     AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN,
     SERVICE_BASE_URL: process.env.SERVICE_BASE_URL + ":" + process.env.PORT || 'http://localhost:3000',
     SERVICE_DESCRIPTION: api_description,
+    NOTIFICATION_DEFAULT_TYPE: process.env.NOTIFICATION_DEFAULT_TYPE || 'memory',
+    NOTIFICATION_SNS_TOPIC_ARN: process.env.NOTIFICATION_SNS_TOPIC_ARN,
 }

@@ -18,7 +18,7 @@ const server = http.createServer(app);
 const startHealthRouter = require('./health');
 const startTodoRouter = require('./todo');
 
-const initializeRoutes = async (dbService, cacheService) => {
+const initializeRoutes = async (dbService, cacheService, notifiaciontService) => {
     app.use(express.static('public'))
     app.use(loggerMiddleware);
     app.use(express.json())
@@ -43,7 +43,7 @@ const initializeRoutes = async (dbService, cacheService) => {
     const swaggerSpec = swaggerJsdoc(options);
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-    await startHealthRouter(app, dbService, cacheService);
+    await startHealthRouter(app, dbService, cacheService, notifiaciontService);
     await startTodoRouter(app, dbService, cacheService);
     app.use(undefinedRouteMiddleware);
     
