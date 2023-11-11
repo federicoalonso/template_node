@@ -1,7 +1,6 @@
 const INotification = require('./INotification');
 const { logger } = require('../logger');
 const { messageBinder } = require('../../utils/locale/locale-binder');
-const { ElementInvalidException } = require('../exceptions/exceptions');
 const { 
     NOTIFICATION_SNS_TOPIC_ARN,
     AWS_REGION,

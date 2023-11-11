@@ -2,7 +2,7 @@ const Redis = require('ioredis');
 const { logger } = require('../logger');
 const { messageBinder } = require('../../utils/locale/locale-binder');
 const { ElementInvalidException } = require('../exceptions/exceptions');
-const { REDIS_HOST, REDIS_PORT } = require('../../config');
+const { REDIS_HOST, REDIS_PORT,NOTIFICATION_CHANNEL } = require('../../config');
 const INotification = require('./INotification');
 
 class RedisNotification extends INotification {
@@ -35,7 +35,7 @@ class RedisNotification extends INotification {
         }
     }
 
-    async publish(message, channel = 'default') {
+    async publish(message, channel = NOTIFICATION_CHANNEL) {
         logger.info('[RedisNotification] [publisj] Publishing message to Redis channel:' + channel);
         try {
             await this.publisher.publish(channel, JSON.stringify(message));
@@ -48,7 +48,7 @@ class RedisNotification extends INotification {
         }
     }
 
-    subscribe(callback, channel = 'default') {
+    subscribe(callback, channel = NOTIFICATION_CHANNEL) {
         logger.info('[RedisNotification] [subscribe] Subscribing to Redis channel:' + channel);
         this.subscriber.subscribe(channel, (err) => {
             if (err) {
@@ -66,7 +66,7 @@ class RedisNotification extends INotification {
         logger.info('[RedisNotification] [subscribe] Finished subscribing to Redis channel:' + channel);
     }
 
-    unsubscribe() {
+    unsubscribe(channel = NOTIFICATION_CHANNEL) {
         logger.info('[RedisNotification] [unsubscribe] Unsubscribing from Redis channel:' + channel);
         this.subscriber.unsubscribe(channel);
         logger.info('[RedisNotification] [unsubscribe] Unsubscribed from Redis channel:' + channel);

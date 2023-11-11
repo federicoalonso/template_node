@@ -7,6 +7,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "ioredis": "^5.3.2",
+    "newrelic": "^11.5.0",
     "node-cache": "^5.1.2",
     "node-cron": "^3.0.3",
     "sqlite3": "^5.1.6",
@@ -18,7 +19,8 @@
   "scripts": {
     "test": "cross-env ENVIRONMENT=test jest --silent --coverage --runInBand --detectOpenHandles --forceExit",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "lint": "eslint . "
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

@@ -18,14 +18,11 @@ const startHealthRouter = async (app, dbSer, cacheSer, notificationSrv) => {
     const notifiaciontService = notificationSrv;
 
     app.get('/health', async (_, res) => {
-        let status_ok = true;
-    
         let cacheStatus = await cacheService.health();
         let dbStatus = await dbService.healthCheck();
         let notificationStatus = await notifiaciontService.healthCheck();
     
         if ((cacheStatus.keys !== 0 && cacheStatus !== 'PONG') || !dbStatus || notificationStatus !== 'PONG') {
-            status_ok = false;
             return res.status(500).json({
                 status: 'FAIL',
                 cache: cacheStatus,
