@@ -22,6 +22,7 @@ const {
     GetCommand,
     UpdateCommand,
     DeleteCommand,
+    ExecuteStatementCommand,
 } = require("@aws-sdk/lib-dynamodb");
 
 const IDBService = require('../IDBService');
@@ -211,6 +212,28 @@ class DynamoDBService extends IDBService {
             throw error;
         } finally {
             logger.info('[DynamoDB] [delete] Deleting todo finished');
+        }
+    }
+
+    async customQuery(parameterList, valueList) {
+        logger.info('[DynamoDB] [customQuery] Executing custom query');
+        
+        const query = `SELECT * FROM ${this.tableName} WHERE ${parameterList.join('=? AND ')}=?`;
+        // const query = `SELECT * FROM ${this.tableName} WHERE title=?`;
+
+        try {
+            const command = new ExecuteStatementCommand({
+                Statement: query,
+                Parameters: valueList
+            });
+
+            const response = await this.client.send(command);
+            return response.Items;
+        } catch (error) {
+            logger.error(error);
+            throw error;
+        } finally {
+            logger.info('[DynamoDB] [customQuery] Custom query execution finished');
         }
     }
 }

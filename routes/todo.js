@@ -175,6 +175,22 @@ const startTodoRouter = async (app, dbSer) => {
             logger.info('[TodoRouter] [delete] Deleting todo method finished');
         }
     });
+
+    app.get('/customQuery', async (req, res) => {
+        logger.info('[TodoRouter] [customQuery] Custom query method invoked');
+        try {
+            const {
+                title
+            } = req.query;
+            const todos = await dbService.customQuery(['title'],[title]);
+            res.status(200).json(todos);
+        } catch (error) {
+            logger.error(error);
+            return evalException(error, res);
+        } finally {
+            logger.info('[TodoRouter] [customQuery] Custom query method finished');
+        }
+    });
 }
 
 module.exports = startTodoRouter;
