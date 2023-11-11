@@ -83,20 +83,17 @@ class DynamoDBService extends IDBService {
         logger.info('Getting all todos method invoked');
 
         try {
-            // Scan the table for all items
-            const paginatedScan = paginateScan({
-                client: this.docClient
-            }, {
+            const paginatedScan = paginateScan(
+                { client: this.docClient },
+                {
                 TableName: this.tableName,
                 ConsistentRead: true,
-            });
-
+                }
+            );
             const todos = [];
             for await (const page of paginatedScan) {
-                console.log(page.Items);
                 todos.push(...page.Items);
             }
-
             return todos;
         } catch (error) {
             logger.error(error);
@@ -104,6 +101,15 @@ class DynamoDBService extends IDBService {
         } finally {
             logger.info('Getting all todos method finished');
         }
+    }
+
+    async save(item) {
+        const command = new PutCommand({
+            TableName: this.tableName,
+            Item: item,
+        });
+        await this.docClient.send(command);
+        return item;
     }
 }
 
