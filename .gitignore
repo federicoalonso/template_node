@@ -24,6 +24,7 @@ yarn-debug.log*
 yarn-error.log*
 
 *.db
+*.sqlite
 
 frontend/trademaster/build
 **/newrelic_agent.log
