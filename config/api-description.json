@@ -1,0 +1,21 @@
+{
+    "name": "api-template",
+    "serviceBaseURL": "http://localhost:3000",
+        "services": [
+            {
+                "description": "Create to a todo",
+                "location": "/todo",
+                "verb": "post"
+            },
+            {
+                "description": "Get all todos",
+                "location": "/todo",
+                "verb": "get"
+            },
+            {
+                "description": "Get a specific todo",
+                "location": "/todo/:id",
+                "verb": "get"
+            }
+        ]
+    }

@@ -1,4 +1,5 @@
-const conf = require('./config.json')
+const conf = require('./config.json');
+const api_description = require('./api-description.json');
 
 module.exports = {
     CORS_CONFIGURATION: conf.cors,
@@ -24,4 +25,6 @@ module.exports = {
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
     AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN,
+    SERVICE_BASE_URL: process.env.SERVICE_BASE_URL + ":" + process.env.PORT || 'http://localhost:3000',
+    SERVICE_DESCRIPTION: api_description,
 }
