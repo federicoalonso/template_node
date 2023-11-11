@@ -1,31 +1,38 @@
 const { REDIS_HOST, REDIS_PORT } = require('../../config');
 const Redis = require('ioredis');
 
-const redis = new Redis({
-    host: REDIS_HOST,
-    port: REDIS_PORT,
-});
+const ICacheService = require('./ICacheService');
 
-const set = async (key, value, ttl = 3 * 24 * 60 * 60) => {
-    return await redis.set(key, JSON.stringify(value), 'EX', ttl);
-};
+class RedisCache extends ICacheService {
+    cache = null;
+    constructor() {
+        super();
+        this.cache = new Redis({
+            host: REDIS_HOST,
+            port: REDIS_PORT,
+        });
+    }
 
-const get = async (key) => {
-    const data = await redis.get(key);
-    return data ? JSON.parse(data) : null;
-};
+    async set(key, value, ttl = 3 * 24 * 60 * 60) {
+        return await this.cache.set(key, JSON.stringify(value), 'EX', ttl);
+    }
 
-const del = async (key) => {
-    return await redis.del(key);
-};
+    async get(key) {
+        const data = await this.cache.get(key);
+        return data ? JSON.parse(data) : null;
+    }
 
-const health = async () => {
-    return await redis.ping();
+    async del(key) {
+        return await this.cache.del(key);
+    }
+
+    async health() {
+        return await this.cache.ping();
+    }
+
+    stop() {
+        return this.cache.disconnect();
+    }
 }
 
-module.exports = {
-    set,
-    get,
-    del,
-    health,
-};
+module.exports = RedisCache;

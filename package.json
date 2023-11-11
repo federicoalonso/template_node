@@ -14,10 +14,14 @@
     "winston": "^3.11.0"
   },
   "scripts": {
+    "test": "cross-env ENVIRONMENT=test jest --silent --coverage --runInBand --detectOpenHandles --forceExit",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   }
 }

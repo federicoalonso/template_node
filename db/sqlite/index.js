@@ -1,6 +1,7 @@
 const { 
     DB_SQLITE_TABLE,
     DB_SQLITE_FILE,
+    ENVIRONMENT,
 } = require('../../config');
 const {
     logger
@@ -8,6 +9,9 @@ const {
 const {
     v4: uuidv4
 } = require('uuid');
+const {
+    ElementNotFoundException
+} = require('../../common/exceptions/exceptions');
 
 const IDBService = require('../IDBService');
 const sqlite3 = require('sqlite3').verbose();
@@ -18,14 +22,16 @@ class SQLiteDBService extends IDBService {
 
     constructor() {
         super();
-        this.db = new sqlite3.Database(DB_SQLITE_FILE);
-        this.tableName = DB_SQLITE_TABLE;
-        this.createTableIfNotExists(this.tableName);
+        this.customTableConstructor(DB_SQLITE_TABLE);
     }
 
     async customTableConstructor(tableName) {
-        this.db = new sqlite3.Database(DB_SQLITE_FILE);
         this.tableName = tableName;
+        if (ENVIRONMENT === 'test') {
+            this.db = new sqlite3.Database(`./test_${DB_SQLITE_FILE}`);
+        } else {
+            this.db = new sqlite3.Database(DB_SQLITE_FILE);
+        }
         this.createTableIfNotExists(this.tableName);
     }
 

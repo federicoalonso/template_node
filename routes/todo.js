@@ -1,4 +1,3 @@
-const { cacheService } = require('../common/cache');
 const {
     logger
 } = require('../common/logger');
@@ -45,9 +44,10 @@ const {
  *              description: Internal Server Error
  */
 
-const startTodoRouter = async (app, dbSer) => {
+const startTodoRouter = async (app, dbSer, cacheSer) => {
 
     const dbService = dbSer;
+    const cacheService = cacheSer;
 
     app.get('/todo', async (req, res) => {
         logger.info('[TodoRouter] [get] Getting all todos method invoked');
@@ -58,7 +58,8 @@ const startTodoRouter = async (app, dbSer) => {
                 return res.status(200).json(cachedTodos);
             }
             const todos = await dbService.getAll();
-            await cacheService.set('todos', todos);
+            if (todos.length > 0)
+                await cacheService.set('todos', todos);
             res.status(200).json(todos);
         } catch (error) {
             logger.error(error);
