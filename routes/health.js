@@ -1,8 +1,5 @@
-const healthRouter = require('express').Router();
 const { cacheService } = require('../common/cache');
-const { customDBService } = require('../db/dbService');
 
-const dbServ = customDBService('dynamo', 'todos');
 /**
  * @openapi
  * /health:
@@ -15,26 +12,33 @@ const dbServ = customDBService('dynamo', 'todos');
  *          500:
  *              description: FAIL
  */
-healthRouter.get('/health', async (req, res) => {
-    let status_ok = true;
 
-    let cacheStatus = await cacheService.health();
-    let dbStatus = await dbServ.healthCheck();
+const startHealthRouter = async (app, dbSer) => {
 
-    if ((cacheStatus.keys !== 0 && cacheStatus !== 'PONG') || !dbStatus) {
-        status_ok = false;
-        return res.status(500).json({
-            status: 'FAIL',
+    let dbService = dbSer;
+
+    app.get('/health', async (_, res) => {
+        let status_ok = true;
+    
+        let cacheStatus = await cacheService.health();
+        let dbStatus = await dbService.healthCheck();
+    
+        if ((cacheStatus.keys !== 0 && cacheStatus !== 'PONG') || !dbStatus) {
+            status_ok = false;
+            return res.status(500).json({
+                status: 'FAIL',
+                cache: cacheStatus,
+                db: dbStatus,
+            });
+        }
+    
+        res.status(200).json({
+            status: 'OK',
             cache: cacheStatus,
             db: dbStatus,
         });
-    }
-
-    res.status(200).json({
-        status: 'OK',
-        cache: cacheStatus,
-        db: dbStatus,
     });
-});
+}
 
-module.exports = healthRouter;
+
+module.exports = startHealthRouter;

@@ -78,6 +78,33 @@ class DynamoDBService extends IDBService {
             logger.info('Checking DynamoDB health finished');
         }
     }
+
+    async getAll() {
+        logger.info('Getting all todos method invoked');
+
+        try {
+            // Scan the table for all items
+            const paginatedScan = paginateScan({
+                client: this.docClient
+            }, {
+                TableName: this.tableName,
+                ConsistentRead: true,
+            });
+
+            const todos = [];
+            for await (const page of paginatedScan) {
+                console.log(page.Items);
+                todos.push(...page.Items);
+            }
+
+            return todos;
+        } catch (error) {
+            logger.error(error);
+            throw error;
+        } finally {
+            logger.info('Getting all todos method finished');
+        }
+    }
 }
 
 module.exports = DynamoDBService;
