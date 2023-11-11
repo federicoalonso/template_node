@@ -50,7 +50,7 @@ const startTodoRouter = async (app, dbSer) => {
     const dbService = dbSer;
 
     app.get('/todo', async (req, res) => {
-        logger.info('Getting all todos method invoked');
+        logger.info('[TodoRouter] [get] Getting all todos method invoked');
         try {
             const cachedTodos = await cacheService.get('todos');
             if (cachedTodos) {
@@ -64,12 +64,12 @@ const startTodoRouter = async (app, dbSer) => {
             logger.error(error);
             return evalException(error, res);
         } finally {
-            logger.info('Getting all todos method finished');
+            logger.info('[TodoRouter] [get] Getting all todos method finished');
         }
     });
 
     app.post('/todo', async (req, res) => {
-        logger.info('Creating a new todo method invoked');
+        logger.info('[TodoRouter] [post] Create a new todo method invoked');
         try {
             const {
                 title,
@@ -92,6 +92,23 @@ const startTodoRouter = async (app, dbSer) => {
         } catch (error) {
             logger.error(error);
             return evalException(error, res)
+        } finally {
+            logger.info('[TodoRouter] [post] Create a new todo method finished');
+        }
+    });
+
+    app.get('/todo/paginated', async (req, res) => {
+        logger.info('[TodoRouter] [getAllPaginated] Getting all todos paginated method invoked');
+        try {
+            const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 10;
+            const lastKey = req.query.lastKey ? req.query.lastKey : undefined;
+            const todos = await dbService.getAllPaginated(pageSize, lastKey);
+            res.status(200).json(todos);
+        } catch (error) {
+            logger.error(error);
+            return evalException(error, res);
+        } finally {
+            logger.info('[TodoRouter] [getAllPaginated] Getting all todos paginated method finished');
         }
     });
 }

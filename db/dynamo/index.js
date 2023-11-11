@@ -16,6 +16,7 @@ const {
 const {
     DynamoDBDocumentClient,
     paginateScan,
+    ScanCommand,
     PutCommand
 } = require("@aws-sdk/lib-dynamodb");
 const {
@@ -59,7 +60,7 @@ class DynamoDBService extends IDBService {
     }
 
     async healthCheck() {
-        logger.info('Checking DynamoDB health started');
+        logger.info('[DynamoDB] Checking DynamoDB health');
         try {
             const command = new ListTablesCommand({});
             const response = await this.client.send(command);
@@ -75,12 +76,12 @@ class DynamoDBService extends IDBService {
             logger.error(err);
             return false;
         } finally {
-            logger.info('Checking DynamoDB health finished');
+            logger.info('[DynamoDB] Checking DynamoDB health finished');
         }
     }
 
     async getAll() {
-        logger.info('Getting all todos method invoked');
+        logger.info('[DynamoDB] [getAll] Getting all todos');
 
         try {
             const paginatedScan = paginateScan(
@@ -99,7 +100,7 @@ class DynamoDBService extends IDBService {
             logger.error(error);
             throw error;
         } finally {
-            logger.info('Getting all todos method finished');
+            logger.info('[DynamoDB] [getAll] Getting all todos finished');
         }
     }
 
@@ -110,6 +111,35 @@ class DynamoDBService extends IDBService {
         });
         await this.docClient.send(command);
         return item;
+    }
+
+    async getAllPaginated(pageSize, lastKey) {
+        logger.info('[DynamoDB] [getAllPaginated] Getting all todos');
+        try {
+            const params = {
+                TableName: this.tableName,
+                Limit: pageSize,
+            };
+
+            if (lastKey) {
+                params.ExclusiveStartKey = { id: lastKey };
+            }
+            
+            // En lugar de utilizar paginateScan, utiliza la función scan directamente
+            const scanOutput = await this.client.send(new ScanCommand(params));
+            const response = {
+                todos: scanOutput.Items,
+                lastKey: scanOutput.LastEvaluatedKey,
+                count: scanOutput.Count,
+                scannedCount: scanOutput.ScannedCount,
+            };
+            return response;
+        } catch (error) {
+            logger.error(error);
+            throw error;
+        } finally {
+            logger.info('[DynamoDB] [getAllPaginated] Getting all todos finished');
+        }
     }
 }
 
