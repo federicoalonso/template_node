@@ -111,6 +111,53 @@ const startTodoRouter = async (app, dbSer) => {
             logger.info('[TodoRouter] [getAllPaginated] Getting all todos paginated method finished');
         }
     });
+
+    app.get('/todo/:id', async (req, res) => {
+        logger.info('[TodoRouter] [getById] Getting todo by id method invoked');
+        try {
+            const {
+                id
+            } = req.params;
+            const todo = await dbService.getById(id);
+            res.status(200).json(todo);
+        } catch (error) {
+            logger.error(error);
+            return evalException(error, res);
+        } finally {
+            logger.info('[TodoRouter] [getById] Getting todo by id method finished');
+        }
+    });
+
+    app.put('/todo/:id', async (req, res) => {
+        logger.info('[TodoRouter] [update] Updating todo method invoked');
+        try {
+            const {
+                id
+            } = req.params;
+            const {
+                title,
+                description,
+            } = req.body;
+            if (!title || !description) {
+                return res.status(400).json({
+                    message: 'Title and description are required',
+                });
+            }
+            const todoItem = {
+                id,
+                title,
+                description,
+            };
+            await dbService.update(id, todoItem);
+            await cacheService.del('todos');
+            res.status(200).json(todoItem);
+        } catch (error) {
+            logger.error(error);
+            return evalException(error, res);
+        } finally {
+            logger.info('[TodoRouter] [update] Updating todo method finished');
+        }
+    });
 }
 
 module.exports = startTodoRouter;

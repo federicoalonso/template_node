@@ -17,7 +17,9 @@ const {
     DynamoDBDocumentClient,
     paginateScan,
     ScanCommand,
-    PutCommand
+    PutCommand,
+    GetCommand,
+    UpdateCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const {
     v4: uuidv4
@@ -141,6 +143,52 @@ class DynamoDBService extends IDBService {
             logger.info('[DynamoDB] [getAllPaginated] Getting all todos finished');
         }
     }
+
+    async getById(id) {
+        logger.info('[DynamoDB] [getById] Getting todo by id');
+        try {
+            const getCommand = new GetCommand({
+                TableName: this.tableName,
+                Key: {
+                  id: id,
+                },
+                ConsistentRead: true,
+              });
+              const getResponse = await this.docClient.send(getCommand);
+            return getResponse.Item;
+        } catch (error) {
+            logger.error(error);
+            throw error;
+        } finally {
+            logger.info('[DynamoDB] [getById] Getting todo by id finished');
+        }
+    }
+
+    async update(id, item) {
+        logger.info('[DynamoDB] [update] Updating todo');
+        try {
+            const updateCommand = new UpdateCommand({
+                TableName: this.tableName,
+                Key: {
+                  id: id,
+                },
+                UpdateExpression: "set title = :t, description = :d",
+                ExpressionAttributeValues: {
+                  ":t": item.title,
+                  ":d": item.description,
+                },
+                ReturnValues: "ALL_NEW",
+                ConsistentRead: true,
+              });
+              const updateResponse = await this.docClient.send(updateCommand);
+            return updateResponse.Item;
+        } catch (error) {
+            logger.error(error);
+            throw error;
+        } finally {
+            logger.info('[DynamoDB] [update] Updating todo finished');
+        }
+        }
 }
 
 module.exports = DynamoDBService;
