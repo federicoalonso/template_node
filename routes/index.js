@@ -44,7 +44,7 @@ const initializeRoutes = async (dbService, cacheService, notifiaciontService) =>
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     await startHealthRouter(app, dbService, cacheService, notifiaciontService);
-    await startTodoRouter(app, dbService, cacheService);
+    await startTodoRouter(app, dbService, cacheService, notifiaciontService);
     app.use(undefinedRouteMiddleware);
     
     const serverInstance = server.listen(PORT, () => logger.info(`Server listening on port ${PORT}!`));

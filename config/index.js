@@ -29,4 +29,5 @@ module.exports = {
     SERVICE_DESCRIPTION: api_description,
     NOTIFICATION_DEFAULT_TYPE: process.env.NOTIFICATION_DEFAULT_TYPE || 'memory',
     NOTIFICATION_SNS_TOPIC_ARN: process.env.NOTIFICATION_SNS_TOPIC_ARN,
+    NOTIFICATION_CHANNEL: process.env.NOTIFICATION_CHANNEL || 'todos',
 }

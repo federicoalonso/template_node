@@ -8,6 +8,7 @@ const {
 const {
     v4: uuidv4
 } = require('uuid');
+const { NOTIFICATION_CHANNEL } = require('../config');
 
 /**
  * @openapi
@@ -44,10 +45,11 @@ const {
  *              description: Internal Server Error
  */
 
-const startTodoRouter = async (app, dbSer, cacheSer) => {
+const startTodoRouter = async (app, dbSer, cacheSer, notificationSrv) => {
 
     const dbService = dbSer;
     const cacheService = cacheSer;
+    const notifiaciontService = notificationSrv;
 
     app.get('/todo', async (req, res) => {
         logger.info('[TodoRouter] [get] Getting all todos method invoked');
@@ -89,6 +91,7 @@ const startTodoRouter = async (app, dbSer, cacheSer) => {
             };
             await dbService.save(todoItem);
             await cacheService.del('todos');
+            await notifiaciontService.publish(todoItem, NOTIFICATION_CHANNEL);
             res.status(201).json(todoItem);
         } catch (error) {
             logger.error(error);

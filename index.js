@@ -7,11 +7,13 @@ const { dbService } = require('./db/dbService');
 const { cacheService } = require('./common/cache');
 const { notifiaciontService } = require('./common/notifications');
 const initializeRoutes = require('./routes');
+const initializeWorkers = require('./workers');
 const { SERVICE_DESCRIPTION } = require('./config');
 
 async function run() {
     try {
         const {server: serverInstance, app: app} = await initializeRoutes(dbService, cacheService, notifiaciontService);
+        await initializeWorkers(notifiaciontService);
         return {server: serverInstance, app: app, cacheService: cacheService, dbService: dbService, notifiaciontService: notifiaciontService};
     } catch (err) {
         logger.error(err);

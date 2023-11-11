@@ -6,11 +6,16 @@ const { REDIS_HOST, REDIS_PORT } = require('../../config');
 const INotification = require('./INotification');
 
 class RedisNotification extends INotification {
-    redis = null;
+    publisher = null;
+    subscriber = null;
 
     constructor() {
         super();
-        this.redis = new Redis({
+        this.publisher = new Redis({
+            host: REDIS_HOST,
+            port: REDIS_PORT,
+        });
+        this.subscriber = new Redis({
             host: REDIS_HOST,
             port: REDIS_PORT,
         });
@@ -19,7 +24,7 @@ class RedisNotification extends INotification {
     async healthCheck() {
         logger.info('[RedisNotification] [healthCheck] Checking Redis connection');
         try {
-            const ret = await this.redis.ping();
+            const ret = await this.subscriber.ping();
             logger.info('[RedisNotification] [healthCheck] Redis connection is OK');
             return ret;
         } catch (error) {
@@ -33,10 +38,10 @@ class RedisNotification extends INotification {
     async publish(message, channel = 'default') {
         logger.info('[RedisNotification] [publisj] Publishing message to Redis channel:' + channel);
         try {
-            await this.redis.publish(channel, JSON.stringify(message));
+            await this.publisher.publish(channel, JSON.stringify(message));
             logger.info('[RedisNotification] [publish] Message published to Redis channel:' + channel);
         } catch (error) {
-            logger.error('[RedisNotification] [publish] Error publishing message to Redis channel:' + channel);
+            logger.error('[RedisNotification] [publish] Error publishing message to Redis channel, error:' + error);
             throw error;
         } finally {
             logger.info('[RedisNotification] [publish] Finished publishing message to Redis channel:' + channel);
@@ -45,7 +50,7 @@ class RedisNotification extends INotification {
 
     subscribe(callback, channel = 'default') {
         logger.info('[RedisNotification] [subscribe] Subscribing to Redis channel:' + channel);
-        this.redis.subscribe(channel, (err) => {
+        this.subscriber.subscribe(channel, (err) => {
             if (err) {
                 logger.error('[RedisNotification] [subscribe] Error subscribing to Redis channel:' + channel);
                 throw err;
@@ -53,7 +58,7 @@ class RedisNotification extends INotification {
 
             logger.info('[RedisNotification] [subscribe] Subscribed to Redis channel:' + channel);
 
-            this.redis.on('message', (channel, message) => {
+            this.subscriber.on('message', (channel, message) => {
                 logger.info('[RedisNotification] [subscribe] Message received from Redis channel:' + channel);
                 callback(JSON.parse(message));
             });
@@ -63,14 +68,15 @@ class RedisNotification extends INotification {
 
     unsubscribe() {
         logger.info('[RedisNotification] [unsubscribe] Unsubscribing from Redis channel:' + channel);
-        this.redis.unsubscribe(channel);
+        this.subscriber.unsubscribe(channel);
         logger.info('[RedisNotification] [unsubscribe] Unsubscribed from Redis channel:' + channel);
         logger.info('[RedisNotification] [unsubscribe] Finished unsubscribing from Redis channel:' + channel);
     }
 
     async close() {
         logger.info('[RedisNotification] [close] Closing Redis connection');
-        await this.redis.quit();
+        await this.publisher.quit();
+        await this.subscriber.quit();
         logger.info('[RedisNotification] [close] Redis connection closed');
     }
 }
