@@ -5,8 +5,6 @@ const {
 const { dbService } = require('./db/dbService');
 const initializeRoutes = require('./routes');
 
-
-
 async function run() {
     try {
         return await initializeRoutes(dbService);

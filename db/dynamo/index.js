@@ -1,6 +1,6 @@
-const { 
-    AWS_REGION, 
-    AWS_ACCESS_KEY_ID, 
+const {
+    AWS_REGION,
+    AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY,
     AWS_SESSION_TOKEN,
     DB_DYNAMO_HOST,
@@ -86,13 +86,12 @@ class DynamoDBService extends IDBService {
         logger.info('[DynamoDB] [getAll] Getting all todos');
 
         try {
-            const paginatedScan = paginateScan(
-                { client: this.docClient },
-                {
+            const paginatedScan = paginateScan({
+                client: this.docClient
+            }, {
                 TableName: this.tableName,
                 ConsistentRead: true,
-                }
-            );
+            });
             const todos = [];
             for await (const page of paginatedScan) {
                 todos.push(...page.Items);
@@ -124,9 +123,11 @@ class DynamoDBService extends IDBService {
             };
 
             if (lastKey) {
-                params.ExclusiveStartKey = { id: lastKey };
+                params.ExclusiveStartKey = {
+                    id: lastKey
+                };
             }
-            
+
             // En lugar de utilizar paginateScan, utiliza la función scan directamente
             const scanOutput = await this.client.send(new ScanCommand(params));
             const response = {
@@ -150,11 +151,11 @@ class DynamoDBService extends IDBService {
             const getCommand = new GetCommand({
                 TableName: this.tableName,
                 Key: {
-                  id: id,
+                    id: id,
                 },
                 ConsistentRead: true,
-              });
-              const getResponse = await this.docClient.send(getCommand);
+            });
+            const getResponse = await this.docClient.send(getCommand);
             return getResponse.Item;
         } catch (error) {
             logger.error(error);
@@ -170,17 +171,17 @@ class DynamoDBService extends IDBService {
             const updateCommand = new UpdateCommand({
                 TableName: this.tableName,
                 Key: {
-                  id: id,
+                    id: id,
                 },
                 UpdateExpression: "set title = :t, description = :d",
                 ExpressionAttributeValues: {
-                  ":t": item.title,
-                  ":d": item.description,
+                    ":t": item.title,
+                    ":d": item.description,
                 },
                 ReturnValues: "ALL_NEW",
                 ConsistentRead: true,
-              });
-              const updateResponse = await this.docClient.send(updateCommand);
+            });
+            const updateResponse = await this.docClient.send(updateCommand);
             return updateResponse.Item;
         } catch (error) {
             logger.error(error);
@@ -188,7 +189,7 @@ class DynamoDBService extends IDBService {
         } finally {
             logger.info('[DynamoDB] [update] Updating todo finished');
         }
-        }
+    }
 }
 
 module.exports = DynamoDBService;
