@@ -1,5 +1,3 @@
-const { cacheService } = require('../common/cache');
-
 /**
  * @openapi
  * /health:
@@ -13,22 +11,23 @@ const { cacheService } = require('../common/cache');
  *              description: FAIL
  */
 
-const startHealthRouter = async (app, dbSer) => {
+const startHealthRouter = async (app, dbSer, cacheSer, notificationSrv) => {
 
-    let dbService = dbSer;
+    const dbService = dbSer;
+    const cacheService = cacheSer;
+    const notifiaciontService = notificationSrv;
 
     app.get('/health', async (_, res) => {
-        let status_ok = true;
-    
         let cacheStatus = await cacheService.health();
         let dbStatus = await dbService.healthCheck();
+        let notificationStatus = await notifiaciontService.healthCheck();
     
-        if ((cacheStatus.keys !== 0 && cacheStatus !== 'PONG') || !dbStatus) {
-            status_ok = false;
+        if ((cacheStatus.keys !== 0 && cacheStatus !== 'PONG') || !dbStatus || notificationStatus !== 'PONG') {
             return res.status(500).json({
                 status: 'FAIL',
                 cache: cacheStatus,
                 db: dbStatus,
+                notification: notificationStatus,
             });
         }
     
@@ -36,6 +35,7 @@ const startHealthRouter = async (app, dbSer) => {
             status: 'OK',
             cache: cacheStatus,
             db: dbStatus,
+            notification: notificationStatus,
         });
     });
 }

@@ -3,12 +3,15 @@ const { logger } = require('../logger');
 const { messageBinder } = require('../../utils/locale/locale-binder');
 const { ElementInvalidException } = require('../exceptions/exceptions');
 
+const RedisCache = require('./redisCache');
+const MemoryCache = require('./memoryCache');
+
 let cacheService;
 
 if (CACHE_DEFAULT_TYPE === 'memory') {
-    cacheService = require('./localCache');
+    cacheService = new MemoryCache();
 } else if (CACHE_DEFAULT_TYPE === 'redis') {
-    cacheService = require('./redisCache');
+    cacheService = new RedisCache();
 } else {
     logger.error(messageBinder().invalidCacheType);
     throw new ElementInvalidException(messageBinder().invalidCacheType);
@@ -16,9 +19,9 @@ if (CACHE_DEFAULT_TYPE === 'memory') {
 
 const customCacheService = (type) => {
     if (type === 'memory') {
-        return require('./localCache');
+        return new MemoryCache();
     } else if (type === 'redis') {
-        return require('./redisCache');
+        return new RedisCache();
     } else {
         logger.error(messageBinder().invalidCacheType);
         throw new ElementInvalidException(messageBinder().invalidCacheType);

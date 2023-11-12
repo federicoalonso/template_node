@@ -1,4 +1,3 @@
-const { cacheService } = require('../common/cache');
 const {
     logger
 } = require('../common/logger');
@@ -9,6 +8,7 @@ const {
 const {
     v4: uuidv4
 } = require('uuid');
+const { NOTIFICATION_CHANNEL } = require('../config');
 
 /**
  * @openapi
@@ -45,9 +45,11 @@ const {
  *              description: Internal Server Error
  */
 
-const startTodoRouter = async (app, dbSer) => {
+const startTodoRouter = async (app, dbSer, cacheSer, notificationSrv) => {
 
     const dbService = dbSer;
+    const cacheService = cacheSer;
+    const notifiaciontService = notificationSrv;
 
     app.get('/todo', async (req, res) => {
         logger.info('[TodoRouter] [get] Getting all todos method invoked');
@@ -58,7 +60,8 @@ const startTodoRouter = async (app, dbSer) => {
                 return res.status(200).json(cachedTodos);
             }
             const todos = await dbService.getAll();
-            await cacheService.set('todos', todos);
+            if (todos.length > 0)
+                await cacheService.set('todos', todos);
             res.status(200).json(todos);
         } catch (error) {
             logger.error(error);
@@ -88,6 +91,7 @@ const startTodoRouter = async (app, dbSer) => {
             };
             await dbService.save(todoItem);
             await cacheService.del('todos');
+            await notifiaciontService.publish(todoItem, NOTIFICATION_CHANNEL);
             res.status(201).json(todoItem);
         } catch (error) {
             logger.error(error);

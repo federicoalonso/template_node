@@ -265,7 +265,6 @@ class DynamoDBService extends IDBService {
         logger.info('[DynamoDB] [customQuery] Executing custom query');
         
         const query = `SELECT * FROM ${this.tableName} WHERE ${parameterList.join('=? AND ')}=?`;
-        // const query = `SELECT * FROM ${this.tableName} WHERE title=?`;
 
         try {
             const command = new ExecuteStatementCommand({
