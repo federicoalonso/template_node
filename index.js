@@ -15,18 +15,15 @@ const {
 const {
     notifiaciontService
 } = require('./common/notifications');
-const initializeRoutes = require('./routes');
-const initializeWorkers = require('./workers');
+const initializeRoutes = require("./routes");
+const initializeWorkers = require("./workers");
 const {
     REGISTER_SERVICE_DESCRIPTION
 } = require('./config');
 
 async function run() {
     try {
-        const {
-            server: serverInstance,
-            app: app
-        } = await initializeRoutes(dbService, cacheService, notifiaciontService);
+        const { server: serverInstance, app: app } = await initializeRoutes(dbService, cacheService, notifiaciontService);
         await initializeWorkers(notifiaciontService);
         return {
             server: serverInstance,
@@ -42,10 +39,6 @@ async function run() {
     }
 }
 
-cron.schedule('*/1 * * * *', () => {
-    logger.info('[index] [run] cron job started');
-    cacheService.set('api-template', JSON.stringify(REGISTER_SERVICE_DESCRIPTION), 300);
-    logger.info('[index] [run] cron job finished');
-});
+cron.schedule("*/1 * * * *", () => {logger.info("[index] [run] cron job started");cacheService.set("api-template", JSON.stringify(REGISTER_SERVICE_DESCRIPTION), 300);logger.info("[index] [run] cron job finished");});
 
 module.exports = run();
