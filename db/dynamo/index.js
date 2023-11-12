@@ -23,6 +23,8 @@ const {
     UpdateCommand,
     DeleteCommand,
     ExecuteStatementCommand,
+    CreateTableCommand,
+    ListTablesCommand,
 } = require("@aws-sdk/lib-dynamodb");
 
 const IDBService = require('../IDBService');
@@ -60,6 +62,50 @@ class DynamoDBService extends IDBService {
         this.docClient = DynamoDBDocumentClient.from(this.client);
         this.tableName = tableName;
     }
+
+    async tableExists(tableName) {
+        logger.info('[DynamoDB] [tableExists] Checking if table exists');
+        try {
+            const command = new ListTablesCommand({});
+            const response = await this.client.send(command);
+            if (!response.TableNames.includes(tableName)) {
+                logger.error('[DynamoDB] [tableExists] Table not found');
+                return false;
+            }
+            logger.info('[DynamoDB] [tableExists] Table found');
+            return true;
+        } catch (err) {
+            logger.error('[DynamoDB] [tableExists]' + err);
+            return false;
+        } finally {
+            logger.info('[DynamoDB] [tableExists] Checking if table exists finished');
+        }
+    }
+
+    async createTable(tableName, keySchema, attributeDefinitions, provisionedThroughput) {
+        if (await this.tableExists(tableName)) {
+            logger.info('[DynamoDB] [createTable] Table already exists');
+            return;
+        }
+
+        logger.info('[DynamoDB] [createTable] Creating table');
+        try {
+            const params = {
+                TableName: tableName,
+                KeySchema: keySchema,
+                AttributeDefinitions: attributeDefinitions,
+                ProvisionedThroughput: provisionedThroughput,
+            };
+            const command = new CreateTableCommand(params);
+            await this.client.send(command);
+            logger.info('[DynamoDB] [createTable] Table created');
+        } catch (err) {
+            logger.error('[DynamoDB] [createTable]' + err);
+        } finally {
+            logger.info('[DynamoDB] [createTable] Creating table finished');
+        }
+    }
+
 
     async healthCheck() {
         logger.info('[DynamoDB] Checking DynamoDB health');
