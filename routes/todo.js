@@ -2,9 +2,20 @@ const {
     logger
 } = require('../common/logger');
 const {
+    verifyToken,
+    generateToken
+} = require('../utils/jwt');
+const {
     evalException,
+    ConflictWithElements,
+    ElementAlreadyExist,
+    ElementInvalidException,
+    ElementNotFoundException,
+    ErrorMessages,
+    HttpErrorCodes,
+    InvalidCredentials,
+    MissingToken
 } = require('../common/exceptions/exceptions');
-
 const {
     v4: uuidv4
 } = require('uuid');
@@ -79,9 +90,19 @@ const startTodoRouter = async (app, dbSer, cacheSer, notificationSrv) => {
                 description,
             } = req.body;
             if (!title || !description) {
-                return res.status(400).json({
-                    message: 'Title and description are required',
-                });
+                return evalException(new ElementInvalidException('Title and description are required'), res);
+            }
+            const token = req.headers.authorization.split(" ")[1];
+            if (!token) {
+                return evalException(new MissingToken('Missing token'), res);
+            }
+            const payload = await verifyToken(token);
+            if (!payload) {
+                return evalException(new MissingToken('Invalid token'), res);
+            }
+            const role = payload.role;
+            if (role !== 'admin') {
+                return evalException(new InvalidCredentials('Invalid credentials'), res);
             }
             const uid = uuidv4();
             const todoItem = {
@@ -143,9 +164,7 @@ const startTodoRouter = async (app, dbSer, cacheSer, notificationSrv) => {
                 description,
             } = req.body;
             if (!title || !description) {
-                return res.status(400).json({
-                    message: 'Title and description are required',
-                });
+                return evalException(new ElementInvalidException('Title and description are required'), res);
             }
             const todoItem = {
                 id,

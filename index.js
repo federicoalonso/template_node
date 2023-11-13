@@ -15,19 +15,16 @@ const {
 const {
     notifiaciontService
 } = require('./common/notifications');
-const initializeRoutes = require('./routes');
-const initializeWorkers = require('./workers');
+const initializeRoutes = require("./routes");
+const initializeWorkers = require("./workers");
 const {
     REGISTER_SERVICE_DESCRIPTION
 } = require('./config');
 
 async function run() {
     try {
-        const {
-            server: serverInstance,
-            app: app
-        } = await initializeRoutes(dbService, cacheService, notifiaciontService);
-        await initializeWorkers(notifiaciontService);
+        const { server: serverInstance, app: app } = await initializeRoutes(dbService, cacheService, notifiaciontService);
+        await initializeWorkers(notifiaciontService, dbService, cacheService);
         return {
             server: serverInstance,
             app: app,
