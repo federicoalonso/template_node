@@ -5,7 +5,8 @@
             {
                 "description": "Create to a todo",
                 "location": "/todo",
-                "verb": "post"
+                "verb": "post",
+                "permissionsNeeded": ["admin"]
             },
             {
                 "description": "Get all todos",
@@ -15,7 +16,8 @@
             {
                 "description": "Get a specific todo",
                 "location": "/todo/:id",
-                "verb": "get"
+                "verb": "get",
+                "permissionsNeeded": ["admin", "user"]
             }
         ]
     }

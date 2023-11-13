@@ -39,10 +39,6 @@ async function run() {
     }
 }
 
-cron.schedule('*/1 * * * *', () => {
-    logger.info('[index] [run] cron job started');
-    cacheService.set('api-template', JSON.stringify(REGISTER_SERVICE_DESCRIPTION), 300);
-    logger.info('[index] [run] cron job finished');
-});
+cron.schedule("*/1 * * * *", () => {logger.info("[index] [run] cron job started");cacheService.set("api-template", JSON.stringify(REGISTER_SERVICE_DESCRIPTION), 300);logger.info("[index] [run] cron job finished");});
 
 module.exports = run();
