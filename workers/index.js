@@ -12,7 +12,7 @@ const {
     MissingToken
 } = require('../common/exceptions/exceptions');
 
-const initializeWorkers = async (notificationSrv, dbService, cacheService) => {
+const initializeWorkers = async (notificationSrv, dbService, cacheService, httpService) => {
 
     const notificationService = notificationSrv;
 

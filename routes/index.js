@@ -18,7 +18,7 @@ const server = http.createServer(app);
 const startHealthRouter = require('./health');
 const startTodoRouter = require('./todo');
 
-const initializeRoutes = async (dbService, cacheService, notifiaciontService) => {
+const initializeRoutes = async (dbService, cacheService, notifiaciontService, httpService) => {
     app.use(express.static('public'))
     app.use(loggerMiddleware);
     app.use(express.json())

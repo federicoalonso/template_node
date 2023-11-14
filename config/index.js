@@ -30,4 +30,5 @@ module.exports = {
     NOTIFICATION_DEFAULT_TYPE: process.env.NOTIFICATION_DEFAULT_TYPE || 'memory',
     NOTIFICATION_SNS_TOPIC_ARN: process.env.NOTIFICATION_SNS_TOPIC_ARN,
     NOTIFICATION_CHANNEL: process.env.NOTIFICATION_CHANNEL || 'todos',
+    HTTP_DEFAULT_TYPE: process.env.HTTP_DEFAULT_TYPE || 'axios',
 }

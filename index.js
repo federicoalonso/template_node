@@ -13,6 +13,9 @@ const {
     cacheService
 } = require('./common/cache');
 const {
+    httpService
+} = require('./common/http');
+const {
     notifiaciontService
 } = require('./common/notifications');
 const initializeRoutes = require("./routes");
@@ -23,14 +26,15 @@ const {
 
 async function run() {
     try {
-        const { server: serverInstance, app: app } = await initializeRoutes(dbService, cacheService, notifiaciontService);
-        await initializeWorkers(notifiaciontService, dbService, cacheService);
+        const { server: serverInstance, app: app } = await initializeRoutes(dbService, cacheService, notifiaciontService, httpService);
+        await initializeWorkers(notifiaciontService, dbService, cacheService, httpService);
         return {
             server: serverInstance,
             app: app,
             cacheService: cacheService,
             dbService: dbService,
-            notifiaciontService: notifiaciontService
+            notifiaciontService: notifiaciontService,
+            httpService: httpService
         };
     } catch (err) {
         logger.error(err);
