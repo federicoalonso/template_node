@@ -12,6 +12,7 @@ const {
 const { ElementNotFoundException } = require('../../common/exceptions/exceptions');
 const {
     ListTablesCommand,
+    CreateTableCommand,
     DynamoDBClient
 } = require('@aws-sdk/client-dynamodb');
 const {
@@ -23,8 +24,6 @@ const {
     UpdateCommand,
     DeleteCommand,
     ExecuteStatementCommand,
-    CreateTableCommand,
-    ListTablesCommand,
 } = require("@aws-sdk/lib-dynamodb");
 
 const IDBService = require('../IDBService');
@@ -33,6 +32,22 @@ class DynamoDBService extends IDBService {
     client = null;
     docClient = null;
     tableName = null;
+
+    keySchema = [
+        {
+            AttributeName: 'id',
+            KeyType: 'HASH',
+        },
+    ];
+
+    attributeDefinitions = [
+        {
+            AttributeName: 'id',
+            AttributeType: 'S',
+        },
+    ];
+
+    billingMode = 'PAY_PER_REQUEST';
 
     constructor() {
         super();
@@ -47,6 +62,7 @@ class DynamoDBService extends IDBService {
         });
         this.docClient = DynamoDBDocumentClient.from(this.client);
         this.tableName = DB_DYNAMO_TABLE;
+        this.createTable(this.tableName);
     }
 
     customTableConstructor(tableName) {
@@ -82,7 +98,7 @@ class DynamoDBService extends IDBService {
         }
     }
 
-    async createTable(tableName, keySchema, attributeDefinitions, provisionedThroughput) {
+    async createTable(tableName, keySchema = this.keySchema, attributeDefinitions = this.attributeDefinitions) {
         if (await this.tableExists(tableName)) {
             logger.info('[DynamoDB] [createTable] Table already exists');
             return;
@@ -94,7 +110,7 @@ class DynamoDBService extends IDBService {
                 TableName: tableName,
                 KeySchema: keySchema,
                 AttributeDefinitions: attributeDefinitions,
-                ProvisionedThroughput: provisionedThroughput,
+                BillingMode: this.billingMode,
             };
             const command = new CreateTableCommand(params);
             await this.client.send(command);

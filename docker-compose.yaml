@@ -1,0 +1,69 @@
+version: '3.1'
+
+services:
+  template:
+    build:
+      context: .
+    environment:
+      - PORT=80
+      - ENVIRONMENT=development
+      - LOGLEVEL=debug
+      - LOCALE=en
+      - SERVICE_BASE_URL=http://localhost:3050
+      - CACHE_DEFAULT_TYPE=redis
+      - REDIS_HOST=localhost
+      - REDIS_PORT=6379
+      - DB_DEFAULT_TYPE=dynamo
+      - DB_DYNAMO_TABLE=todo
+      - DB_DYNAMO_HOST=http://localhost:8000
+      - AWS_REGION=us-east-1
+      - NOTIFICATION_DEFAULT_TYPE=redis
+      - NOTIFICATION_CHANNEL=template
+    depends_on:
+      dynamodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - 3050:80
+
+  redis:
+    image: redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    restart: unless-stopped
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - 8082:8081
+    depends_on:
+      - redis
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: dynamodb
+    command: "-jar DynamoDBLocal.jar -sharedDb"
+    ports:
+      - "8000:8000"
+    volumes:
+      - dynamodb_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  redis-data:
+    driver: local
+  dynamodb_data:

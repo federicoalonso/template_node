@@ -1,7 +1,7 @@
 const { publicKey, privateKey } = require('../../config');
 const jwt = require("jsonwebtoken");
-const { messageBinder } = require("../../common/locale/locale-binder");
-const { MissingToken } = require("../../exceptions/exceptions");
+const { messageBinder } = require("../../utils/locale/locale-binder");
+const { MissingToken } = require("../../common/exceptions/exceptions");
 
 const verifyOptions = {
     algorithms: ["RS256"],

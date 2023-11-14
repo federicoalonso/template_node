@@ -22,7 +22,7 @@ const startHealthRouter = async (app, dbSer, cacheSer, notificationSrv) => {
         let dbStatus = await dbService.healthCheck();
         let notificationStatus = await notifiaciontService.healthCheck();
     
-        if ((cacheStatus.keys !== 0 && cacheStatus !== 'PONG') || !dbStatus || notificationStatus !== 'PONG') {
+        if ((cacheStatus.keys !== 0 && cacheStatus !== 'PONG') || !dbStatus || !notificationStatus) {
             return res.status(500).json({
                 status: 'FAIL',
                 cache: cacheStatus,

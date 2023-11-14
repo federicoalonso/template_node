@@ -90,7 +90,7 @@ class SQLiteDBService extends IDBService {
         }
     }
 
-    async getAllPaginated(_, _) {
+    async getAllPaginated(_, __) {
         // SQLite no tiene soporte nativo para paginación, pero podrías simularlo con LIMIT y OFFSET.
         // Aquí simplemente devolveré todos los elementos sin paginación.
         return this.getAll();

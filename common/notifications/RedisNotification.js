@@ -26,7 +26,8 @@ class RedisNotification extends INotification {
         try {
             const ret = await this.subscriber.ping();
             logger.info('[RedisNotification] [healthCheck] Redis connection is OK');
-            return ret;
+            if (ret[0].toUpperCase() === 'PONG') return true;
+            return false;
         } catch (error) {
             logger.error('[RedisNotification] [healthCheck] Redis connection is NOT OK');
             throw error;
