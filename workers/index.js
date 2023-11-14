@@ -16,8 +16,15 @@ const initializeWorkers = async (notificationSrv, dbService, cacheService) => {
 
     const notificationService = notificationSrv;
 
-    const logTodosPublished = (data) => {
+    const logTodosPublished = async (data) => {
         logger.info(`[workers] [logTodosPublished] Data received: ${data}`);
+        const uid = uuidv4();
+        const todoItem = {
+            'id': uid,
+            data,
+        };
+        await dbService.save(todoItem);
+        await cacheService.del('todos', todoItem);
     }
 
     await notificationService.subscribe(logTodosPublished, NOTIFICATION_CHANNEL);
